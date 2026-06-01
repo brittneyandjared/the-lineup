@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Lineup</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMzIgMzIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzBhMGEwYyIvPjxyZWN0IHg9IjE0IiB5PSI0IiB3aWR0aD0iNCIgaGVpZ2h0PSIxNyIgcng9IjEiIGZpbGw9IiNjMDM5MmIiLz48cmVjdCB4PSI4IiB5PSIxMyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjQiIHJ4PSIxIiBmaWxsPSIjYzAzOTJiIi8+PGNpcmNsZSBjeD0iMTEiIGN5PSIyNyIgcj0iMi41IiBmaWxsPSIjYzAzOTJiIi8+PGNpcmNsZSBjeD0iMjEiIGN5PSIyNyIgcj0iMi41IiBmaWxsPSIjMjJjNTVlIi8+PC9zdmc+">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTgwIDE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iIzBhMGEwYyIvPjxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjE1MiIgaGVpZ2h0PSIxNTIiIHJ4PSIyIiBmaWxsPSJub25lIiBzdHJva2U9IiNjMDM5MmIiIHN0cm9rZS13aWR0aD0iMi41Ii8+PHJlY3QgeD0iNzkiIHk9IjIyIiB3aWR0aD0iMjIiIGhlaWdodD0iOTYiIHJ4PSIyIiBmaWxsPSIjYzAzOTJiIi8+PHJlY3QgeD0iNDUiIHk9IjczIiB3aWR0aD0iOTAiIGhlaWdodD0iMjIiIHJ4PSIyIiBmaWxsPSIjYzAzOTJiIi8+PGNpcmNsZSBjeD0iNjIiIGN5PSIxNDAiIHI9IjE0IiBmaWxsPSIjYzAzOTJiIi8+PGNpcmNsZSBjeD0iMTE4IiBjeT0iMTQwIiByPSIxNCIgZmlsbD0iIzIyYzU1ZSIvPjwvc3ZnPg==">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="The Lineup">
+<meta name="theme-color" content="#0a0a0c">
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -178,10 +184,15 @@
   .event-card.past { opacity: 0.35; }
   .event-card.jared-card { border-left-color: rgba(192,57,43,0.5); }
   .event-card.brittney-card { border-left-color: rgba(34,197,94,0.5); }
+  .event-card.both-card { border-left-color: rgba(168,85,247,0.5); }
   .event-card.jared-card:hover { border-left-color: var(--red); }
   .event-card.brittney-card:hover { border-left-color: #22c55e; }
+  .event-card.both-card:hover { border-left-color: #a855f7; }
   .event-date-block { min-width: 46px; text-align: center; flex-shrink: 0; }
   .event-day { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.8rem; line-height: 1; color: var(--red); }
+  .event-day.day-jared { color: #e05a4a; text-shadow: 0 0 10px rgba(192,57,43,0.4); }
+  .event-day.day-brittney { color: #4ade80; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
+  .event-day.day-both { background: linear-gradient(135deg, #e05a4a 50%, #4ade80 50%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .event-month-abbr { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); }
   .event-vline { width: 1px; height: 34px; background: var(--border-bright); flex-shrink: 0; }
   .event-info { flex: 1; min-width: 0; }
@@ -192,6 +203,7 @@
   .added-by-tag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em; padding: 2px 9px; font-weight: 700; text-transform: uppercase; clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%); }
   .added-by-tag.jared { background: var(--jared-dim); color: #e05a4a; border: 1px solid rgba(192,57,43,0.4); }
   .added-by-tag.brittney { background: var(--brittney-dim); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
+  .added-by-tag.both { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.4); }
   .event-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
   .event-card:hover .event-actions { opacity: 1; }
   .action-icon { background: var(--raised); border: 1px solid var(--border-bright); color: var(--silver); width: 28px; height: 28px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
@@ -211,10 +223,14 @@
   }
   .event-card-mobile.jared-card { border-left-color: rgba(192,57,43,0.5); }
   .event-card-mobile.brittney-card { border-left-color: rgba(34,197,94,0.5); }
+  .event-card-mobile.both-card { border-left-color: rgba(168,85,247,0.5); }
   .event-card-mobile:active { background: var(--raised); }
   .ecm-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
   .ecm-date { flex-shrink: 0; text-align: center; }
   .ecm-day { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: var(--red); text-shadow: 0 0 10px var(--red-glow); }
+  .ecm-day.day-jared { color: #e05a4a; text-shadow: 0 0 10px rgba(192,57,43,0.4); }
+  .ecm-day.day-brittney { color: #4ade80; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
+  .ecm-day.day-both { background: linear-gradient(135deg, #e05a4a 50%, #4ade80 50%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .ecm-month { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); }
   .ecm-info { flex: 1; min-width: 0; }
   .ecm-name { font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--white); line-height: 1.2; margin-bottom: 5px; }
@@ -425,6 +441,7 @@
     <select class="who-select" id="whoSelect">
       <option value="jared">Jared</option>
       <option value="brittney">Brittney</option>
+      <option value="both">Both of Us</option>
     </select>
     <button class="add-btn" onclick="openModal()">+ Add Event</button>
   </div>
@@ -451,7 +468,7 @@
   </div>
 
   <div class="view-controls">
-    <div class="section-title">&#8212; All Events &#8212;</div>
+    <div class="section-title" id="sectionTitle">&#8212; All Events &#8212;</div>
     <div class="view-toggle" id="viewToggle">
       <button class="toggle-btn active" onclick="setView('list')" id="btnList">List</button>
       <button class="toggle-btn" onclick="setView('calendar')" id="btnCal">Calendar</button>
@@ -468,6 +485,7 @@
     <button class="filter-chip" onclick="setFilter('trip',this)">&#9992; Trips</button>
     <button class="filter-chip" onclick="setFilter('jared',this)">Jared</button>
     <button class="filter-chip" onclick="setFilter('brittney',this)">Brittney</button>
+    <button class="filter-chip" onclick="setFilter('both',this)">Both</button>
   </div>
 
   <div class="events-list-wrap" id="listView">
@@ -643,6 +661,8 @@ function render(){updateSummary();view==='list'?renderList():renderCalendar();}
 function updateSummary(){
   const y=viewMonth.getFullYear(),m=viewMonth.getMonth();
   document.getElementById('summaryMonthName').textContent=viewMonth.toLocaleString('default',{month:'long',year:'numeric'}).toUpperCase();
+  const monthShort=viewMonth.toLocaleString('default',{month:'long'}).toUpperCase();
+  document.getElementById('sectionTitle').textContent=`— ${monthShort} —`;
   const me=events.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===y&&d.getMonth()===m;}).sort((a,b)=>a.date.localeCompare(b.date));
   document.getElementById('statTotal').textContent=me.length;
   document.getElementById('statJared').textContent=me.filter(e=>e.addedBy==='jared').length;
@@ -653,6 +673,9 @@ function updateSummary(){
 
 function filteredEvents(){
   let ev=[...events].sort((a,b)=>a.date.localeCompare(b.date));
+  // Always scope to the selected month first
+  const y=viewMonth.getFullYear(),m=viewMonth.getMonth();
+  ev=ev.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===y&&d.getMonth()===m;});
   const today=fmt(new Date());
   if(filter==='upcoming') ev=ev.filter(e=>e.date>=today);
   else if(filter==='week'){
@@ -662,6 +685,7 @@ function filteredEvents(){
   }
   else if(filter==='jared') ev=ev.filter(e=>e.addedBy==='jared');
   else if(filter==='brittney') ev=ev.filter(e=>e.addedBy==='brittney');
+  else if(filter==='both') ev=ev.filter(e=>e.addedBy==='both');
   else if(['concert','festival','experience','trip','other'].includes(filter)) ev=ev.filter(e=>(e.type||'concert')===filter);
   return ev;
 }
@@ -675,12 +699,13 @@ function renderList(){
   el.innerHTML=ev.map(e=>{
     const d=new Date(e.date+'T00:00:00');
     const mon=d.toLocaleString('default',{month:'short'}).toUpperCase();
-    const byLabel=e.addedBy==='jared'?'Jared':'Brittney';
+    const byLabel=e.addedBy==='jared'?'Jared':e.addedBy==='brittney'?'Brittney':'Both';
     const pastClass=e.date<today?'past':'';
+    const dayClass=`day-${e.addedBy||'jared'}`;
 
     // Desktop card
     const desktop=`<div class="event-card ${pastClass} ${e.addedBy}-card" onclick="openDetail('${e.id}')">
-      <div class="event-date-block"><div class="event-day">${d.getDate()}</div><div class="event-month-abbr">${mon}</div></div>
+      <div class="event-date-block"><div class="event-day ${dayClass}">${d.getDate()}</div><div class="event-month-abbr">${mon}</div></div>
       <div class="event-vline"></div>
       <div class="event-info">
         <div class="event-name">${typeIcon(e.type)} ${esc(e.name)}</div>
@@ -697,7 +722,7 @@ function renderList(){
     const mobile=`<div class="event-card-mobile ${pastClass} ${e.addedBy}-card" onclick="openDetail('${e.id}')">
       <div class="ecm-top">
         <div class="ecm-date">
-          <div class="ecm-day">${d.getDate()}</div>
+          <div class="ecm-day ${dayClass}">${d.getDate()}</div>
           <div class="ecm-month">${mon}</div>
         </div>
         <div class="ecm-info">
@@ -751,7 +776,7 @@ function openDetail(id){
     ${e.time?`<div class="detail-row"><span class="detail-row-icon">&#128336;</span><span>${fmtTime(e.time)}</span></div>`:''}
     ${e.genre?`<div class="detail-row"><span class="detail-row-icon">&#127928;</span><span>${esc(e.genre)}</span></div>`:''}
     <div class="detail-row"><span class="detail-row-icon">&#127903;</span><span>${ticketLabel(e.tickets)}</span></div>
-    <div class="detail-row"><span class="detail-row-icon">&#128100;</span><span>Added by ${e.addedBy==='jared'?'Jared':'Brittney'}</span></div>
+    <div class="detail-row"><span class="detail-row-icon">&#128100;</span><span>Added by ${e.addedBy==='jared'?'Jared':e.addedBy==='brittney'?'Brittney':'Both of Us'}</span></div>
     ${e.notes?`<div class="detail-notes">${esc(e.notes)}</div>`:''}
     <div style="margin-top:22px;display:flex;gap:8px;">
       <button class="btn-primary" style="font-size:0.78rem;padding:10px" onclick="openEdit('${e.id}')">Edit</button>
