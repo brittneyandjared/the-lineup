@@ -555,8 +555,12 @@
       <input class="form-input" id="fName" placeholder="e.g. Knocked Loose, Spiritbox...">
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="fDate" type="date"></div>
+      <div class="form-group"><label class="form-label" id="fDateLabel">Start Date *</label><input class="form-input" id="fDate" type="date"></div>
       <div class="form-group"><label class="form-label">Time</label><input class="form-input" id="fTime" type="time" value="19:00"></div>
+    </div>
+    <div class="form-group" id="fEndDateGroup" style="display:none">
+      <label class="form-label">End Date</label>
+      <input class="form-input" id="fEndDate" type="date">
     </div>
     <div class="form-group"><label class="form-label" id="fVenueLabel">Venue</label><input class="form-input" id="fVenue" placeholder="e.g. Ryman Auditorium"></div>
     <div class="form-group"><label class="form-label">City / Location</label><input class="form-input" id="fCity" placeholder="e.g. Nashville, TN"></div>
@@ -620,6 +624,8 @@ const TYPE_CFG={
 function typeIcon(t){return (TYPE_CFG[t]||TYPE_CFG.other).icon;}
 function typeLabel(t){return (TYPE_CFG[t]||TYPE_CFG.other).label;}
 
+const MULTI_DAY_TYPES = ['festival','experience','trip','other'];
+
 function onTypeChange(){
   const t=document.getElementById('fType').value;
   const cfg=TYPE_CFG[t]||TYPE_CFG.other;
@@ -629,6 +635,9 @@ function onTypeChange(){
   document.getElementById('fSubcatLabel').textContent=cfg.subcatLbl;
   const sel=document.getElementById('fGenre');
   sel.innerHTML=cfg.subcats.map((s,i)=>`<option value="${i===0?'':s}">${s}</option>`).join('');
+  const isMultiDay=MULTI_DAY_TYPES.includes(t);
+  document.getElementById('fEndDateGroup').style.display=isMultiDay?'block':'none';
+  document.getElementById('fDateLabel').textContent=isMultiDay?'Start Date *':'Date *';
 }
 
 // ── STORAGE ──────────────────────────────────────
@@ -640,7 +649,7 @@ function load(){
     events=[
       {id:uid(),name:'Knocked Loose',date:fmt(new Date(y,m,18)),time:'19:30',venue:'Ryman Auditorium',city:'Nashville, TN',type:'concert',genre:'Metalcore',tickets:'have',notes:'Front row - hyped!!',addedBy:'jared'},
       {id:uid(),name:'Spiritbox',date:fmt(new Date(y,m+1,7)),time:'20:00',venue:'Marathon Music Works',city:'Nashville, TN',type:'concert',genre:'Metalcore',tickets:'have',notes:'',addedBy:'brittney'},
-      {id:uid(),name:'Halloween Horror Nights',date:fmt(new Date(y,m+1,15)),time:'18:00',venue:'Universal Studios Florida',city:'Orlando, FL',type:'experience',genre:'Horror Event',tickets:'considering',notes:'Check dates - usually Sep-Nov',addedBy:'brittney'},
+      {id:uid(),name:'Halloween Horror Nights',date:fmt(new Date(y,m+1,15)),endDate:fmt(new Date(y,m+1,18)),time:'18:00',venue:'Universal Studios Florida',city:'Orlando, FL',type:'experience',genre:'Horror Event',tickets:'considering',notes:'Check dates - usually Sep-Nov',addedBy:'brittney'},
       {id:uid(),name:'Gatlinburg Weekend',date:fmt(new Date(y,m+2,5)),time:'',venue:'',city:'Gatlinburg, TN',type:'trip',genre:'Weekend Getaway',tickets:'na',notes:'Need to book cabin',addedBy:'jared'},
     ];
     save();
@@ -710,7 +719,7 @@ function renderList(){
       <div class="event-vline"></div>
       <div class="event-info">
         <div class="event-name">${typeIcon(e.type)} ${esc(e.name)}</div>
-        <div class="event-meta">${e.venue?`<span>&#128205; ${esc(e.venue)}${e.city?', '+esc(e.city):''}</span>`:e.city?`<span>&#128205; ${esc(e.city)}</span>`:''} ${e.time?`<span>&#128336; ${fmtTime(e.time)}</span>`:''}</div>
+        <div class="event-meta">${e.venue?`<span>&#128205; ${esc(e.venue)}${e.city?', '+esc(e.city):''}</span>`:e.city?`<span>&#128205; ${esc(e.city)}</span>`:''} ${e.time?`<span>&#128336; ${fmtTime(e.time)}</span>`:''} ${e.endDate?`<span>&#128197; thru ${fmtShort(e.endDate)}</span>`:''}</div>
       </div>
       <div class="event-tags">${e.genre?`<span class="genre-tag">${esc(e.genre)}</span>`:''}<span class="added-by-tag ${e.addedBy}">${byLabel}</span></div>
       <div class="event-actions" onclick="event.stopPropagation()">
@@ -729,7 +738,7 @@ function renderList(){
         <div class="ecm-info">
           <div class="ecm-name">${typeIcon(e.type)} ${esc(e.name)}</div>
           <div class="ecm-venue">${e.venue?'&#128205; '+esc(e.venue)+(e.city?', '+esc(e.city):''):e.city?'&#128205; '+esc(e.city):''}</div>
-          ${e.time?`<div class="ecm-time">&#128336; ${fmtTime(e.time)}</div>`:''}
+          ${e.endDate?`<div class="ecm-time">&#128197; ${fmtShort(e.date)} &ndash; ${fmtShort(e.endDate)}</div>`:e.time?`<div class="ecm-time">&#128336; ${fmtTime(e.time)}</div>`:''}
         </div>
       </div>
       <div class="ecm-bottom">
@@ -769,7 +778,7 @@ function openDetail(id){
   const d=new Date(e.date+'T00:00:00'),cd=daysUntil(e.date);
   document.getElementById('detailContent').innerHTML=`
     <div class="detail-day-big">${d.getDate()}</div>
-    <div class="detail-month-year">${d.toLocaleString('default',{month:'long',year:'numeric'}).toUpperCase()}</div>
+    <div class="detail-month-year">${d.toLocaleString('default',{month:'long',year:'numeric'}).toUpperCase()}${e.endDate?` &ndash; ${new Date(e.endDate+'T00:00:00').toLocaleString('default',{month:'long',day:'numeric',year:'numeric'}).toUpperCase()}`:''}</div>
     <div class="detail-name">${typeIcon(e.type)} ${esc(e.name)}</div>
     ${cd?`<div class="countdown-badge">&#9889; ${cd} AWAY</div>`:''}
     <div class="detail-row"><span class="detail-row-icon">&#127381;</span><span>${typeLabel(e.type||'concert')}</span></div>
@@ -791,7 +800,7 @@ function closeDetail(){document.getElementById('detailPanel').classList.remove('
 function openModal(pd){
   editId=null;
   document.getElementById('modalTitle').textContent='+ Add an Event';
-  ['fName','fVenue','fCity','fNotes'].forEach(id=>document.getElementById(id).value='');
+  ['fName','fVenue','fCity','fNotes','fEndDate'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('fDate').value=pd||'';
   document.getElementById('fTime').value='19:00';
   document.getElementById('fType').value='concert';
@@ -815,13 +824,16 @@ function openEdit(id){
   document.getElementById('fGenre').value=e.genre||'';
   document.getElementById('fTickets').value=e.tickets||'have';
   document.getElementById('fNotes').value=e.notes||'';
+  document.getElementById('fEndDate').value=e.endDate||'';
   document.getElementById('modalOverlay').classList.add('open');
 }
 function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
 function saveEvent(){
   const name=document.getElementById('fName').value.trim(),date=document.getElementById('fDate').value;
   if(!name||!date){showToast('Name and date required');return;}
-  const data={name,date,time:document.getElementById('fTime').value,type:document.getElementById('fType').value,venue:document.getElementById('fVenue').value.trim(),city:document.getElementById('fCity').value.trim(),genre:document.getElementById('fGenre').value,tickets:document.getElementById('fTickets').value,notes:document.getElementById('fNotes').value.trim(),addedBy:document.getElementById('whoSelect').value};
+  const t=document.getElementById('fType').value;
+  const endDate=MULTI_DAY_TYPES.includes(t)?document.getElementById('fEndDate').value:'';
+  const data={name,date,endDate,time:document.getElementById('fTime').value,type:t,venue:document.getElementById('fVenue').value.trim(),city:document.getElementById('fCity').value.trim(),genre:document.getElementById('fGenre').value,tickets:document.getElementById('fTickets').value,notes:document.getElementById('fNotes').value.trim(),addedBy:document.getElementById('whoSelect').value};
   if(editId){const i=events.findIndex(e=>e.id===editId);if(i!==-1)events[i]={...events[i],...data};showToast('Event updated');}
   else{events.push({id:uid(),...data});showToast('Event added!');}
   const d=new Date(date+'T00:00:00');viewMonth=new Date(d.getFullYear(),d.getMonth(),1);
