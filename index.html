@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Lineup</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #0a0a0c;
+    --deep: #111115;
+    --surface: #18181e;
+    --raised: #1e1e26;
+    --border: #2a2a35;
+    --border-bright: #3a3a4a;
+    --red: #c0392b;
+    --red-hot: #e74c3c;
+    --red-glow: rgba(192,57,43,0.25);
+    --silver: #a8a8b8;
+    --silver-bright: #d0d0e0;
+    --white: #ececf0;
+    --brittney-dim: rgba(34,197,94,0.2);
+    --jared-dim: rgba(192,57,43,0.2);
+    --mono: 'Share Tech Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Oswald', sans-serif;
+    background: var(--void);
+    color: var(--white);
+    min-height: 100vh;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  header {
+    background: var(--deep);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--red), var(--red-hot), var(--red), transparent);
+  }
+  .logo {
+    font-family: 'Special Elite', cursive; text-transform: uppercase;
+    font-size: 1.6rem;
+    color: var(--white);
+    letter-spacing: 2px;
+    padding: 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 0 0 20px var(--red-glow);
+  }
+  .logo-divider { width: 2px; height: 26px; background: var(--red); opacity: 0.6; }
+  .logo-sub { font-family: var(--mono); font-size: 0.55rem; color: var(--silver); letter-spacing: 0.2em; text-transform: uppercase; line-height: 1.5; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  /* layout toggle button */
+  .layout-toggle-btn {
+    background: var(--raised);
+    border: 1px solid var(--border-bright);
+    color: var(--silver);
+    padding: 7px 13px;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  }
+  .layout-toggle-btn:hover { border-color: var(--red); color: var(--white); }
+  .layout-toggle-btn .icon { font-size: 0.9rem; }
+
+  .who-select {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    color: var(--white);
+    padding: 7px 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  }
+  .who-select:hover { border-color: var(--red); }
+  .who-select option { background: var(--surface); }
+
+  .add-btn {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    clip-path: polygon(7px 0%, 100% 0%, calc(100% - 7px) 100%, 0% 100%);
+    white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--red-hot); box-shadow: 0 0 20px var(--red-glow); }
+  .add-btn:active { transform: scale(0.97); }
+
+  /* ── MAIN ───────────────────────────────── */
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 22px; position: relative; z-index: 1; }
+
+  /* ── MONTH SUMMARY ──────────────────────── */
+  .month-summary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    padding: 22px 28px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-nav { display: flex; align-items: center; gap: 12px; }
+  .nav-arrow {
+    background: var(--raised); border: 1px solid var(--border-bright); color: var(--silver);
+    width: 30px; height: 30px; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+  .nav-arrow:hover { border-color: var(--red); color: var(--red); }
+  .summary-month-name { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.4rem; letter-spacing: 2px; white-space: nowrap; text-shadow: 0 0 14px var(--red-glow); }
+  .summary-divider { width: 1px; height: 46px; background: var(--border-bright); flex-shrink: 0; }
+  .summary-stats { display: flex; gap: 24px; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 2rem; color: var(--red); line-height: 1; text-shadow: 0 0 10px var(--red-glow); }
+  .stat-label { font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); margin-top: 3px; }
+  .summary-upcoming { flex: 1; min-width: 0; }
+  .summary-upcoming-label { font-family: var(--mono); font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--silver); margin-bottom: 8px; }
+  .summary-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .event-pill { background: var(--raised); border: 1px solid var(--border-bright); padding: 3px 10px; font-family: var(--mono); font-size: 0.68rem; color: var(--silver-bright); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); }
+  .no-events-msg { color: rgba(255,255,255,0.2); font-family: var(--mono); font-size: 0.75rem; font-style: italic; }
+
+  /* ── CONTROLS ───────────────────────────── */
+  .view-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .section-title { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 2px; color: var(--silver-bright); }
+  .view-toggle { display: flex; border: 1px solid var(--border-bright); overflow: hidden; }
+  .toggle-btn { background: transparent; border: none; padding: 7px 16px; font-family: 'Oswald', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); cursor: pointer; transition: all 0.15s; border-right: 1px solid var(--border-bright); }
+  .toggle-btn:last-child { border-right: none; }
+  .toggle-btn.active { background: var(--red); color: var(--white); }
+  .toggle-btn:not(.active):hover { background: var(--raised); color: var(--white); }
+  .filter-bar { display: flex; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; }
+  .filter-chip { border: 1px solid var(--border-bright); background: transparent; color: var(--silver); padding: 5px 14px; font-family: 'Oswald', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); }
+  .filter-chip:hover { border-color: var(--red); color: var(--red-hot); }
+  .filter-chip.active { background: var(--red); border-color: var(--red); color: var(--white); }
+
+  /* ── EVENT CARDS (desktop) ──────────────── */
+  .events-list { display: flex; flex-direction: column; gap: 2px; }
+  .event-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid transparent; padding: 15px 18px; display: flex; align-items: center; gap: 18px; cursor: pointer; transition: all 0.15s; }
+  .event-card:hover { border-color: var(--border-bright); background: var(--raised); }
+  .event-card.past { opacity: 0.35; }
+  .event-card.jared-card { border-left-color: rgba(192,57,43,0.5); }
+  .event-card.brittney-card { border-left-color: rgba(34,197,94,0.5); }
+  .event-card.jared-card:hover { border-left-color: var(--red); }
+  .event-card.brittney-card:hover { border-left-color: #22c55e; }
+  .event-date-block { min-width: 46px; text-align: center; flex-shrink: 0; }
+  .event-day { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.8rem; line-height: 1; color: var(--red); }
+  .event-month-abbr { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); }
+  .event-vline { width: 1px; height: 34px; background: var(--border-bright); flex-shrink: 0; }
+  .event-info { flex: 1; min-width: 0; }
+  .event-name { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-meta { font-family: var(--mono); font-size: 0.68rem; color: var(--silver); margin-top: 3px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .event-tags { display: flex; gap: 5px; align-items: center; flex-shrink: 0; }
+  .genre-tag { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.07em; padding: 2px 8px; border: 1px solid var(--border-bright); color: var(--silver); clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%); }
+  .added-by-tag { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em; padding: 2px 9px; font-weight: 700; text-transform: uppercase; clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%); }
+  .added-by-tag.jared { background: var(--jared-dim); color: #e05a4a; border: 1px solid rgba(192,57,43,0.4); }
+  .added-by-tag.brittney { background: var(--brittney-dim); color: #4ade80; border: 1px solid rgba(34,197,94,0.4); }
+  .event-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; flex-shrink: 0; }
+  .event-card:hover .event-actions { opacity: 1; }
+  .action-icon { background: var(--raised); border: 1px solid var(--border-bright); color: var(--silver); width: 28px; height: 28px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .action-icon:hover { border-color: var(--silver); color: var(--white); }
+  .action-icon.delete:hover { border-color: var(--red); color: var(--red-hot); background: var(--jared-dim); }
+
+  /* ── MOBILE EVENT CARDS ─────────────────── */
+  /* shown only in mobile layout mode */
+  .event-card-mobile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: none;
+  }
+  .event-card-mobile.jared-card { border-left-color: rgba(192,57,43,0.5); }
+  .event-card-mobile.brittney-card { border-left-color: rgba(34,197,94,0.5); }
+  .event-card-mobile:active { background: var(--raised); }
+  .ecm-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+  .ecm-date { flex-shrink: 0; text-align: center; }
+  .ecm-day { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 2.2rem; line-height: 1; color: var(--red); text-shadow: 0 0 10px var(--red-glow); }
+  .ecm-month { font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); }
+  .ecm-info { flex: 1; min-width: 0; }
+  .ecm-name { font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--white); line-height: 1.2; margin-bottom: 5px; }
+  .ecm-venue { font-family: var(--mono); font-size: 0.72rem; color: var(--silver); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ecm-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .ecm-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .ecm-actions { display: flex; gap: 6px; }
+  .ecm-action {
+    background: var(--raised);
+    border: 1px solid var(--border-bright);
+    color: var(--silver);
+    width: 36px; height: 36px;
+    cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    border-radius: 4px;
+  }
+  .ecm-action:active { background: var(--border); }
+  .ecm-action.delete:active { border-color: var(--red); color: var(--red-hot); }
+  .ecm-time { font-family: var(--mono); font-size: 0.68rem; color: var(--silver); margin-top: 4px; }
+
+  /* ── CALENDAR ───────────────────────────── */
+  .calendar-grid { display: none; }
+  .calendar-grid.active { display: block; }
+  .events-list-wrap.hidden { display: none; }
+  .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 2px; }
+  .cal-day-name { text-align: center; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silver); padding: 7px 0; background: var(--deep); border: 1px solid var(--border); }
+  .cal-body { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-cell { min-height: 86px; background: var(--surface); border: 1px solid var(--border); padding: 7px 5px 5px; transition: border-color 0.15s; }
+  .cal-cell:hover { border-color: var(--border-bright); }
+  .cal-cell.other-month { opacity: 0.22; }
+  .cal-cell.today { border-color: var(--red); border-width: 2px; }
+  .cal-date-num { font-family: var(--mono); font-size: 0.7rem; color: var(--silver); margin-bottom: 4px; line-height: 1; }
+  .cal-cell.today .cal-date-num { color: var(--red-hot); font-weight: bold; }
+  .cal-event-dot { font-family: 'Oswald', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; background: var(--red); color: var(--white); padding: 2px 5px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; transition: background 0.15s; clip-path: polygon(3px 0%, 100% 0%, calc(100% - 3px) 100%, 0% 100%); }
+  .cal-event-dot:hover { background: var(--red-hot); }
+  .cal-event-dot.brittney-event { background: #16a34a; }
+  .cal-event-dot.brittney-event:hover { background: #15803d; }
+
+  /* ── MOBILE CALENDAR ────────────────────── */
+  /* In mobile mode, calendar cells are taller and dots bigger */
+  body.mobile-layout .cal-cell { min-height: 70px; padding: 6px 4px; }
+  body.mobile-layout .cal-event-dot { font-size: 0.68rem; padding: 3px 6px; margin-bottom: 3px; }
+  body.mobile-layout .cal-day-name { font-size: 0.62rem; padding: 8px 0; }
+
+  /* ── EMPTY STATE ────────────────────────── */
+  .empty-state { text-align: center; padding: 64px 24px; color: var(--silver); }
+  .empty-icon { font-size: 2.8rem; margin-bottom: 14px; opacity: 0.4; }
+  .empty-title { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.3rem; letter-spacing: 2px; color: var(--silver-bright); margin-bottom: 8px; }
+  .empty-sub { font-family: var(--mono); font-size: 0.75rem; opacity: 0.55; }
+
+  /* ── MODAL ──────────────────────────────── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--deep); border: 1px solid var(--border-bright); border-top: 3px solid var(--red); padding: 28px; width: 100%; max-width: 500px; transform: translateY(20px); transition: transform 0.2s; max-height: 92vh; overflow-y: auto; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 1.35rem; letter-spacing: 2px; margin-bottom: 24px; color: var(--white); text-shadow: 0 0 14px var(--red-glow); }
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--silver); margin-bottom: 5px; }
+  .form-input, .form-select, .form-textarea { width: 100%; background: var(--surface); border: 1px solid var(--border-bright); border-bottom: 2px solid var(--border-bright); color: var(--white); padding: 10px 12px; font-family: 'Oswald', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--red); border-bottom-color: var(--red-hot); }
+  .form-input::placeholder { color: rgba(255,255,255,0.18); }
+  .form-textarea { resize: vertical; min-height: 68px; }
+  .form-select option { background: var(--surface); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-primary { flex: 1; background: var(--red); color: var(--white); border: none; padding: 13px; font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; clip-path: polygon(7px 0%, 100% 0%, calc(100% - 7px) 100%, 0% 100%); }
+  .btn-primary:hover { background: var(--red-hot); box-shadow: 0 0 18px var(--red-glow); }
+  .btn-secondary { background: var(--raised); border: 1px solid var(--border-bright); color: var(--silver); padding: 13px 18px; font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+  .btn-secondary:hover { border-color: var(--silver); color: var(--white); }
+
+  /* ── DETAIL PANEL ───────────────────────── */
+  .detail-panel { position: fixed; right: 0; top: 0; height: 100%; width: 340px; background: var(--deep); border-left: 3px solid var(--red); padding: 28px 24px; z-index: 150; transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; }
+  .detail-panel.open { transform: translateX(0); box-shadow: -8px 0 40px rgba(0,0,0,0.6); }
+  .detail-close { background: var(--raised); border: 1px solid var(--border-bright); color: var(--silver); width: 30px; height: 30px; cursor: pointer; font-size: 0.78rem; margin-bottom: 22px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .detail-close:hover { border-color: var(--red); color: var(--red); }
+  .detail-day-big { font-family: 'Special Elite', cursive; text-transform: uppercase; font-size: 4.5rem; color: var(--red); line-height: 1; text-shadow: 0 0 28px var(--red-glow); }
+  .detail-month-year { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--silver); text-transform: uppercase; margin-bottom: 16px; }
+  .detail-name { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 5px; }
+  .countdown-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--jared-dim); border: 1px solid rgba(192,57,43,0.4); color: #e05a4a; padding: 4px 11px; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; margin: 10px 0; clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%); }
+  .detail-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; font-family: var(--mono); font-size: 0.76rem; color: var(--silver); }
+  .detail-row-icon { width: 16px; flex-shrink: 0; }
+  .detail-notes { margin-top: 16px; padding: 13px; background: var(--surface); border: 1px solid var(--border-bright); border-left: 2px solid var(--red); font-family: var(--mono); font-size: 0.76rem; color: var(--silver-bright); line-height: 1.7; }
+
+  /* ── TOAST ──────────────────────────────── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--raised); border: 1px solid var(--border-bright); border-left: 3px solid var(--red); color: var(--white); padding: 11px 22px; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.05em; z-index: 300; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── MOBILE LAYOUT MODE ─────────────────── */
+  /* Applied when body.mobile-layout class is active */
+
+  /* Header simplification */
+  body.mobile-layout header { padding: 0 14px; }
+  body.mobile-layout .logo { font-size: 1.3rem; padding: 14px 0; gap: 10px; }
+  body.mobile-layout .logo-sub { display: none; }
+  body.mobile-layout .logo-divider { display: none; }
+  body.mobile-layout .who-label-text { display: none; }
+
+  /* Main padding */
+  body.mobile-layout main { padding: 16px 12px 90px; }
+
+  /* Month summary stacked */
+  body.mobile-layout .month-summary { flex-direction: column; align-items: stretch; gap: 14px; padding: 16px; }
+  body.mobile-layout .summary-divider { display: none; }
+  body.mobile-layout .summary-nav { justify-content: space-between; }
+  body.mobile-layout .summary-month-name { font-size: 1.25rem; }
+  body.mobile-layout .summary-stats { justify-content: space-around; }
+  body.mobile-layout .summary-upcoming-label { display: none; }
+  body.mobile-layout .summary-pills { gap: 4px; }
+  body.mobile-layout .event-pill { font-size: 0.65rem; max-width: 150px; }
+
+  /* View controls */
+  body.mobile-layout .view-controls { margin-bottom: 12px; }
+  body.mobile-layout .section-title { font-size: 1rem; }
+
+  /* Filter bar scrollable */
+  body.mobile-layout .filter-bar { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  body.mobile-layout .filter-bar::-webkit-scrollbar { display: none; }
+  body.mobile-layout .filter-chip { white-space: nowrap; flex-shrink: 0; padding: 6px 14px; font-size: 0.72rem; }
+
+  /* Switch card styles: hide desktop cards, show mobile cards */
+  body.mobile-layout .event-card { display: none !important; }
+  body.mobile-layout .event-card-mobile { display: block; }
+  body.mobile-layout .events-list { gap: 6px; }
+
+  /* Detail panel full screen on mobile */
+  body.mobile-layout .detail-panel { width: 100%; border-left: none; border-top: 3px solid var(--red); }
+
+  /* Modal full screen on mobile */
+  body.mobile-layout .modal-overlay { padding: 0; align-items: flex-end; }
+  body.mobile-layout .modal { max-width: 100%; border-radius: 0; max-height: 95vh; padding: 22px 18px; }
+  body.mobile-layout .form-row { grid-template-columns: 1fr; }
+
+  /* FAB: floating add button on mobile */
+  .fab {
+    display: none;
+    position: fixed;
+    bottom: 76px;
+    right: 18px;
+    width: 56px; height: 56px;
+    background: var(--red);
+    border: none;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 1.6rem;
+    cursor: pointer;
+    z-index: 90;
+    box-shadow: 0 4px 20px rgba(192,57,43,0.5);
+    align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .fab:active { transform: scale(0.93); }
+  body.mobile-layout .fab { display: flex; }
+  body.mobile-layout .add-btn { display: none; }
+
+  /* Bottom nav on mobile */
+  .bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    z-index: 90;
+    padding: 0;
+  }
+  body.mobile-layout .bottom-nav { display: flex; }
+  .bottom-nav-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--silver);
+    padding: 12px 8px 10px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transition: color 0.15s;
+    border-right: 1px solid var(--border);
+  }
+  .bottom-nav-btn:last-child { border-right: none; }
+  .bottom-nav-btn.active { color: var(--red-hot); }
+  .bottom-nav-btn .bnb-icon { font-size: 1.1rem; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span style="display:inline-block;transform:rotate(180deg);line-height:1">&#10013;</span> The Lineup
+    <div class="logo-divider"></div>
+    <div class="logo-sub">Concert<br>Calendar</div>
+  </div>
+  <div class="header-right">
+    <button class="layout-toggle-btn" onclick="toggleLayout()" id="layoutToggleBtn">
+      <span class="icon" id="layoutIcon">📱</span>
+      <span id="layoutLabel">Mobile</span>
+    </button>
+    <span class="who-label who-label-text" style="font-family:var(--mono);font-size:0.65rem;color:var(--silver);letter-spacing:0.1em;text-transform:uppercase;">As:</span>
+    <select class="who-select" id="whoSelect">
+      <option value="jared">Jared</option>
+      <option value="brittney">Brittney</option>
+    </select>
+    <button class="add-btn" onclick="openModal()">+ Add Event</button>
+  </div>
+</header>
+
+<main>
+  <div class="month-summary">
+    <div class="summary-nav">
+      <button class="nav-arrow" onclick="changeMonth(-1)">&#8249;</button>
+      <div class="summary-month-name" id="summaryMonthName"></div>
+      <button class="nav-arrow" onclick="changeMonth(1)">&#8250;</button>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-stats">
+      <div class="stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Events</div></div>
+      <div class="stat"><div class="stat-num" id="statJared" style="color:#e05a4a">0</div><div class="stat-label" style="color:rgba(192,57,43,0.7)">Jared</div></div>
+      <div class="stat"><div class="stat-num" id="statBrittney" style="color:#4ade80">0</div><div class="stat-label" style="color:rgba(34,197,94,0.7)">Brittney</div></div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-upcoming">
+      <div class="summary-upcoming-label">// This month</div>
+      <div class="summary-pills" id="summaryPills"></div>
+    </div>
+  </div>
+
+  <div class="view-controls">
+    <div class="section-title">&#8212; All Events &#8212;</div>
+    <div class="view-toggle" id="viewToggle">
+      <button class="toggle-btn active" onclick="setView('list')" id="btnList">List</button>
+      <button class="toggle-btn" onclick="setView('calendar')" id="btnCal">Calendar</button>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+    <button class="filter-chip" onclick="setFilter('upcoming',this)">Upcoming</button>
+    <button class="filter-chip" onclick="setFilter('week',this)">⚡ This Week</button>
+    <button class="filter-chip" onclick="setFilter('concert',this)">&#127908; Shows</button>
+    <button class="filter-chip" onclick="setFilter('festival',this)">&#127881; Festivals</button>
+    <button class="filter-chip" onclick="setFilter('experience',this)">&#127981; Experiences</button>
+    <button class="filter-chip" onclick="setFilter('trip',this)">&#9992; Trips</button>
+    <button class="filter-chip" onclick="setFilter('jared',this)">Jared</button>
+    <button class="filter-chip" onclick="setFilter('brittney',this)">Brittney</button>
+  </div>
+
+  <div class="events-list-wrap" id="listView">
+    <div class="events-list" id="eventsList"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="empty-icon">&#129304;</div>
+      <div class="empty-title">Nothing Planned Yet</div>
+      <div class="empty-sub">// add your first event above</div>
+    </div>
+  </div>
+
+  <div class="calendar-grid" id="calView">
+    <div class="cal-header">
+      <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div>
+      <div class="cal-day-name">Tue</div><div class="cal-day-name">Wed</div>
+      <div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div>
+      <div class="cal-day-name">Sat</div>
+    </div>
+    <div class="cal-body" id="calBody"></div>
+  </div>
+</main>
+
+<!-- FAB for mobile -->
+<button class="fab" onclick="openModal()">+</button>
+
+<!-- Bottom nav for mobile -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn active" id="bnbList" onclick="setView('list');bnbActive('bnbList')">
+    <span class="bnb-icon">&#9776;</span>List
+  </button>
+  <button class="bottom-nav-btn" id="bnbCal" onclick="setView('calendar');bnbActive('bnbCal')">
+    <span class="bnb-icon">&#128197;</span>Cal
+  </button>
+  <button class="bottom-nav-btn" id="bnbWeek" onclick="setFilter('week',this);setView('list');bnbActive('bnbWeek')">
+    <span class="bnb-icon">⚡</span>This Week
+  </button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">+ Add an Event</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Event Type *</label>
+        <select class="form-select" id="fType" onchange="onTypeChange()">
+          <option value="concert">&#127908; Concert / Show</option>
+          <option value="festival">&#127881; Festival</option>
+          <option value="experience">&#127981; Experience</option>
+          <option value="trip">&#9992; Trip / Getaway</option>
+          <option value="other">&#9733; Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tickets</label>
+        <select class="form-select" id="fTickets">
+          <option value="have">Have Tickets</option>
+          <option value="need">Need Tickets</option>
+          <option value="considering">Considering</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="fNameLabel">Artist / Show Name *</label>
+      <input class="form-input" id="fName" placeholder="e.g. Knocked Loose, Spiritbox...">
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="fDate" type="date"></div>
+      <div class="form-group"><label class="form-label">Time</label><input class="form-input" id="fTime" type="time" value="19:00"></div>
+    </div>
+    <div class="form-group"><label class="form-label" id="fVenueLabel">Venue</label><input class="form-input" id="fVenue" placeholder="e.g. Ryman Auditorium"></div>
+    <div class="form-group"><label class="form-label">City / Location</label><input class="form-input" id="fCity" placeholder="e.g. Nashville, TN"></div>
+    <div class="form-group" id="fSubcatGroup">
+      <label class="form-label" id="fSubcatLabel">Genre</label>
+      <select class="form-select" id="fGenre">
+        <option value="">&#8212;</option>
+        <option>Metal</option><option>Metalcore</option><option>Deathcore</option>
+        <option>Black Metal</option><option>Death Metal</option><option>Doom / Sludge</option>
+        <option>Hardcore</option><option>Nu-Metal</option><option>Prog Metal</option>
+        <option>Rock</option><option>Pop</option><option>Other</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="fNotes" placeholder="Details, plans, hype level..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveEvent()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel">
+  <button class="detail-close" onclick="closeDetail()">X</button>
+  <div id="detailContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='ourshows_v5';
+let events=[],viewMonth=new Date(),filter='all',view='list',editId=null,isMobile=false;
+viewMonth.setDate(1);
+
+// ── LAYOUT TOGGLE ────────────────────────────────
+function toggleLayout(){
+  isMobile=!isMobile;
+  applyLayout();
+  localStorage.setItem('ourshows_layout',isMobile?'mobile':'desktop');
+}
+function applyLayout(){
+  document.body.classList.toggle('mobile-layout',isMobile);
+  document.getElementById('layoutIcon').textContent=isMobile?'🖥':'📱';
+  document.getElementById('layoutLabel').textContent=isMobile?'Desktop':'Mobile';
+}
+function loadLayoutPref(){
+  const saved=localStorage.getItem('ourshows_layout');
+  if(saved){isMobile=saved==='mobile';}
+  else{isMobile=window.innerWidth<=640;}
+  applyLayout();
+}
+
+// ── TYPE CONFIG ──────────────────────────────────
+const TYPE_CFG={
+  concert: {icon:'🎤', label:'Concert', nameLbl:'Artist / Show Name *', namePh:'e.g. Knocked Loose, Spiritbox...', venueLbl:'Venue', subcatLbl:'Genre', subcats:['—','Metal','Metalcore','Deathcore','Black Metal','Death Metal','Doom / Sludge','Hardcore','Nu-Metal','Prog Metal','Rock','Pop','Country','Hip-Hop','Other']},
+  festival: {icon:'🎪', label:'Festival', nameLbl:'Festival Name *', namePh:'e.g. Sonic Temple, Download Fest...', venueLbl:'Venue / Grounds', subcatLbl:'Type', subcats:['—','Music Festival','Food & Drink','Art / Culture','Film','Horror','Multi-Day','Other']},
+  experience: {icon:'🎢', label:'Experience', nameLbl:'Event Name *', namePh:'e.g. Halloween Horror Nights...', venueLbl:'Venue / Location', subcatLbl:'Category', subcats:['—','Theme Park','Horror Event','Escape Room','Comedy Show','Sporting Event','Food / Drink','Other']},
+  trip:     {icon:'✈️', label:'Trip', nameLbl:'Destination / Trip Name *', namePh:'e.g. Nashville Weekend, Gatlinburg...', venueLbl:'Lodging / Hotel', subcatLbl:'Type', subcats:['—','Weekend Getaway','Road Trip','City Trip','Beach','Mountains','International','Other']},
+  other:    {icon:'⭐', label:'Event', nameLbl:'Event Name *', namePh:'e.g. ...', venueLbl:'Location', subcatLbl:'Category', subcats:['—','Other']},
+};
+function typeIcon(t){return (TYPE_CFG[t]||TYPE_CFG.other).icon;}
+function typeLabel(t){return (TYPE_CFG[t]||TYPE_CFG.other).label;}
+
+function onTypeChange(){
+  const t=document.getElementById('fType').value;
+  const cfg=TYPE_CFG[t]||TYPE_CFG.other;
+  document.getElementById('fNameLabel').textContent=cfg.nameLbl;
+  document.getElementById('fName').placeholder=cfg.namePh;
+  document.getElementById('fVenueLabel').textContent=cfg.venueLbl;
+  document.getElementById('fSubcatLabel').textContent=cfg.subcatLbl;
+  const sel=document.getElementById('fGenre');
+  sel.innerHTML=cfg.subcats.map((s,i)=>`<option value="${i===0?'':s}">${s}</option>`).join('');
+}
+
+// ── STORAGE ──────────────────────────────────────
+function save(){try{localStorage.setItem(KEY,JSON.stringify(events));}catch(e){}}
+function load(){
+  try{const r=localStorage.getItem(KEY);if(r)events=JSON.parse(r);}catch(e){events=[];}
+  if(!events.length){
+    const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+    events=[
+      {id:uid(),name:'Knocked Loose',date:fmt(new Date(y,m,18)),time:'19:30',venue:'Ryman Auditorium',city:'Nashville, TN',type:'concert',genre:'Metalcore',tickets:'have',notes:'Front row - hyped!!',addedBy:'jared'},
+      {id:uid(),name:'Spiritbox',date:fmt(new Date(y,m+1,7)),time:'20:00',venue:'Marathon Music Works',city:'Nashville, TN',type:'concert',genre:'Metalcore',tickets:'have',notes:'',addedBy:'brittney'},
+      {id:uid(),name:'Halloween Horror Nights',date:fmt(new Date(y,m+1,15)),time:'18:00',venue:'Universal Studios Florida',city:'Orlando, FL',type:'experience',genre:'Horror Event',tickets:'considering',notes:'Check dates - usually Sep-Nov',addedBy:'brittney'},
+      {id:uid(),name:'Gatlinburg Weekend',date:fmt(new Date(y,m+2,5)),time:'',venue:'',city:'Gatlinburg, TN',type:'trip',genre:'Weekend Getaway',tickets:'na',notes:'Need to book cabin',addedBy:'jared'},
+    ];
+    save();
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+function fmt(d){return d.toISOString().split('T')[0];}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtTime(t){if(!t)return '';const[h,m]=t.split(':').map(Number),ap=h>=12?'PM':'AM';return `${(h%12)||12}:${String(m).padStart(2,'0')} ${ap}`;}
+function fmtShort(s){const d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function daysUntil(s){const t=new Date();t.setHours(0,0,0,0);const d=new Date(s+'T00:00:00'),diff=Math.round((d-t)/86400000);if(diff<0)return null;if(diff===0)return 'TONIGHT';if(diff===1)return 'TOMORROW';return diff+' DAYS';}
+function ticketLabel(v){return{have:'Tickets in hand',need:'Need tickets',considering:'Considering',na:'No tickets needed'}[v]||'';}
+
+// ── RENDER ────────────────────────────────────────
+function render(){updateSummary();view==='list'?renderList():renderCalendar();}
+
+function updateSummary(){
+  const y=viewMonth.getFullYear(),m=viewMonth.getMonth();
+  document.getElementById('summaryMonthName').textContent=viewMonth.toLocaleString('default',{month:'long',year:'numeric'}).toUpperCase();
+  const me=events.filter(e=>{const d=new Date(e.date+'T00:00:00');return d.getFullYear()===y&&d.getMonth()===m;}).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('statTotal').textContent=me.length;
+  document.getElementById('statJared').textContent=me.filter(e=>e.addedBy==='jared').length;
+  document.getElementById('statBrittney').textContent=me.filter(e=>e.addedBy==='brittney').length;
+  const p=document.getElementById('summaryPills');
+  p.innerHTML=me.length?me.map(e=>`<span class="event-pill">${typeIcon(e.type)} ${fmtShort(e.date)} - ${esc(e.name)}</span>`).join(''):'<span class="no-events-msg">// nothing booked</span>';
+}
+
+function filteredEvents(){
+  let ev=[...events].sort((a,b)=>a.date.localeCompare(b.date));
+  const today=fmt(new Date());
+  if(filter==='upcoming') ev=ev.filter(e=>e.date>=today);
+  else if(filter==='week'){
+    const weekEnd=new Date();weekEnd.setDate(weekEnd.getDate()+7);
+    const weekEndStr=fmt(weekEnd);
+    ev=ev.filter(e=>e.date>=today&&e.date<=weekEndStr);
+  }
+  else if(filter==='jared') ev=ev.filter(e=>e.addedBy==='jared');
+  else if(filter==='brittney') ev=ev.filter(e=>e.addedBy==='brittney');
+  else if(['concert','festival','experience','trip','other'].includes(filter)) ev=ev.filter(e=>(e.type||'concert')===filter);
+  return ev;
+}
+
+function renderList(){
+  const ev=filteredEvents(),el=document.getElementById('eventsList'),em=document.getElementById('emptyState'),today=fmt(new Date());
+  if(!ev.length){el.innerHTML='';em.style.display='block';return;}
+  em.style.display='none';
+
+  // Build both desktop and mobile card for each event
+  el.innerHTML=ev.map(e=>{
+    const d=new Date(e.date+'T00:00:00');
+    const mon=d.toLocaleString('default',{month:'short'}).toUpperCase();
+    const byLabel=e.addedBy==='jared'?'Jared':'Brittney';
+    const pastClass=e.date<today?'past':'';
+
+    // Desktop card
+    const desktop=`<div class="event-card ${pastClass} ${e.addedBy}-card" onclick="openDetail('${e.id}')">
+      <div class="event-date-block"><div class="event-day">${d.getDate()}</div><div class="event-month-abbr">${mon}</div></div>
+      <div class="event-vline"></div>
+      <div class="event-info">
+        <div class="event-name">${typeIcon(e.type)} ${esc(e.name)}</div>
+        <div class="event-meta">${e.venue?`<span>&#128205; ${esc(e.venue)}${e.city?', '+esc(e.city):''}</span>`:e.city?`<span>&#128205; ${esc(e.city)}</span>`:''} ${e.time?`<span>&#128336; ${fmtTime(e.time)}</span>`:''}</div>
+      </div>
+      <div class="event-tags">${e.genre?`<span class="genre-tag">${esc(e.genre)}</span>`:''}<span class="added-by-tag ${e.addedBy}">${byLabel}</span></div>
+      <div class="event-actions" onclick="event.stopPropagation()">
+        <button class="action-icon" onclick="openEdit('${e.id}')">&#9998;</button>
+        <button class="action-icon delete" onclick="deleteEvent('${e.id}')">X</button>
+      </div>
+    </div>`;
+
+    // Mobile card
+    const mobile=`<div class="event-card-mobile ${pastClass} ${e.addedBy}-card" onclick="openDetail('${e.id}')">
+      <div class="ecm-top">
+        <div class="ecm-date">
+          <div class="ecm-day">${d.getDate()}</div>
+          <div class="ecm-month">${mon}</div>
+        </div>
+        <div class="ecm-info">
+          <div class="ecm-name">${typeIcon(e.type)} ${esc(e.name)}</div>
+          <div class="ecm-venue">${e.venue?'&#128205; '+esc(e.venue)+(e.city?', '+esc(e.city):''):e.city?'&#128205; '+esc(e.city):''}</div>
+          ${e.time?`<div class="ecm-time">&#128336; ${fmtTime(e.time)}</div>`:''}
+        </div>
+      </div>
+      <div class="ecm-bottom">
+        <div class="ecm-tags">
+          ${e.genre?`<span class="genre-tag">${esc(e.genre)}</span>`:''}
+          <span class="added-by-tag ${e.addedBy}">${byLabel}</span>
+        </div>
+        <div class="ecm-actions" onclick="event.stopPropagation()">
+          <button class="ecm-action" onclick="openEdit('${e.id}')">&#9998;</button>
+          <button class="ecm-action delete" onclick="deleteEvent('${e.id}')">X</button>
+        </div>
+      </div>
+    </div>`;
+
+    return desktop + mobile;
+  }).join('');
+}
+
+function renderCalendar(){
+  const y=viewMonth.getFullYear(),m=viewMonth.getMonth(),first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),today=fmt(new Date());
+  let html='';
+  const prev=new Date(y,m,0).getDate();
+  for(let i=first-1;i>=0;i--)html+=`<div class="cal-cell other-month"><div class="cal-date-num">${prev-i}</div></div>`;
+  for(let d=1;d<=days;d++){
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const de=events.filter(e=>e.date===ds).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    html+=`<div class="cal-cell${ds===today?' today':''}"><div class="cal-date-num">${d}</div>${de.map(e=>`<div class="cal-event-dot${e.addedBy==='brittney'?' brittney-event':''}" onclick="openDetail('${e.id}')">${esc(e.name)}</div>`).join('')}</div>`;
+  }
+  const rem=(first+days)%7===0?0:7-(first+days)%7;
+  for(let i=1;i<=rem;i++)html+=`<div class="cal-cell other-month"><div class="cal-date-num">${i}</div></div>`;
+  document.getElementById('calBody').innerHTML=html;
+}
+
+// ── DETAIL ────────────────────────────────────────
+function openDetail(id){
+  const e=events.find(ev=>ev.id===id);if(!e)return;
+  const d=new Date(e.date+'T00:00:00'),cd=daysUntil(e.date);
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-day-big">${d.getDate()}</div>
+    <div class="detail-month-year">${d.toLocaleString('default',{month:'long',year:'numeric'}).toUpperCase()}</div>
+    <div class="detail-name">${typeIcon(e.type)} ${esc(e.name)}</div>
+    ${cd?`<div class="countdown-badge">&#9889; ${cd} AWAY</div>`:''}
+    <div class="detail-row"><span class="detail-row-icon">&#127381;</span><span>${typeLabel(e.type||'concert')}</span></div>
+    ${e.venue?`<div class="detail-row"><span class="detail-row-icon">&#128205;</span><span>${esc(e.venue)}${e.city?', '+esc(e.city):''}</span></div>`:e.city?`<div class="detail-row"><span class="detail-row-icon">&#128205;</span><span>${esc(e.city)}</span></div>`:''}
+    ${e.time?`<div class="detail-row"><span class="detail-row-icon">&#128336;</span><span>${fmtTime(e.time)}</span></div>`:''}
+    ${e.genre?`<div class="detail-row"><span class="detail-row-icon">&#127928;</span><span>${esc(e.genre)}</span></div>`:''}
+    <div class="detail-row"><span class="detail-row-icon">&#127903;</span><span>${ticketLabel(e.tickets)}</span></div>
+    <div class="detail-row"><span class="detail-row-icon">&#128100;</span><span>Added by ${e.addedBy==='jared'?'Jared':'Brittney'}</span></div>
+    ${e.notes?`<div class="detail-notes">${esc(e.notes)}</div>`:''}
+    <div style="margin-top:22px;display:flex;gap:8px;">
+      <button class="btn-primary" style="font-size:0.78rem;padding:10px" onclick="openEdit('${e.id}')">Edit</button>
+      <button class="btn-secondary" style="font-size:0.78rem;padding:10px 16px" onclick="closeDetail()">Close</button>
+    </div>`;
+  document.getElementById('detailPanel').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailPanel').classList.remove('open');}
+
+// ── MODAL ─────────────────────────────────────────
+function openModal(pd){
+  editId=null;
+  document.getElementById('modalTitle').textContent='+ Add an Event';
+  ['fName','fVenue','fCity','fNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fDate').value=pd||'';
+  document.getElementById('fTime').value='19:00';
+  document.getElementById('fType').value='concert';
+  document.getElementById('fTickets').value='have';
+  onTypeChange();
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('fName').focus(),200);
+}
+function openEdit(id){
+  closeDetail();
+  const e=events.find(ev=>ev.id===id);if(!e)return;
+  editId=id;
+  document.getElementById('modalTitle').textContent='Edit Event';
+  document.getElementById('fType').value=e.type||'concert';
+  onTypeChange();
+  document.getElementById('fName').value=e.name;
+  document.getElementById('fDate').value=e.date;
+  document.getElementById('fTime').value=e.time||'19:00';
+  document.getElementById('fVenue').value=e.venue||'';
+  document.getElementById('fCity').value=e.city||'';
+  document.getElementById('fGenre').value=e.genre||'';
+  document.getElementById('fTickets').value=e.tickets||'have';
+  document.getElementById('fNotes').value=e.notes||'';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+function saveEvent(){
+  const name=document.getElementById('fName').value.trim(),date=document.getElementById('fDate').value;
+  if(!name||!date){showToast('Name and date required');return;}
+  const data={name,date,time:document.getElementById('fTime').value,type:document.getElementById('fType').value,venue:document.getElementById('fVenue').value.trim(),city:document.getElementById('fCity').value.trim(),genre:document.getElementById('fGenre').value,tickets:document.getElementById('fTickets').value,notes:document.getElementById('fNotes').value.trim(),addedBy:document.getElementById('whoSelect').value};
+  if(editId){const i=events.findIndex(e=>e.id===editId);if(i!==-1)events[i]={...events[i],...data};showToast('Event updated');}
+  else{events.push({id:uid(),...data});showToast('Event added!');}
+  const d=new Date(date+'T00:00:00');viewMonth=new Date(d.getFullYear(),d.getMonth(),1);
+  save();closeModal();render();
+}
+function deleteEvent(id){if(!confirm('Remove this event?'))return;events=events.filter(e=>e.id!==id);save();render();showToast('Event removed');}
+
+// ── NAV ───────────────────────────────────────────
+function changeMonth(delta){viewMonth.setMonth(viewMonth.getMonth()+delta);render();}
+function setFilter(f,el){
+  filter=f;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  if(el&&el.classList.contains('filter-chip')) el.classList.add('active');
+  renderList();
+}
+function setView(v){
+  view=v;
+  document.getElementById('btnList').classList.toggle('active',v==='list');
+  document.getElementById('btnCal').classList.toggle('active',v==='calendar');
+  document.getElementById('listView').classList.toggle('hidden',v!=='list');
+  document.getElementById('filterBar').style.display=v==='list'?'flex':'none';
+  document.getElementById('calView').classList.toggle('active',v==='calendar');
+  render();
+}
+function bnbActive(id){document.querySelectorAll('.bottom-nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function scrollToSummary(){window.scrollTo({top:0,behavior:'smooth'});}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDetail();}});
+
+loadLayoutPref();
+load();
+viewMonth=new Date();viewMonth.setDate(1);
+render();
+</script>
+</body>
+</html>
